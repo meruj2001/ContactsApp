@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Contacts</string>
+
+    <string name="action_sort">Sort</string>
+
+    <!-- Strings for edit texts -->
+    <string name="editText_name">Name</string>
+    <string name="editText_surname">Surname</string>
+    <string name="editText_phooneNumber">Phone number</string>
+    <string name="editText_email">Email</string>
+
+</resources>

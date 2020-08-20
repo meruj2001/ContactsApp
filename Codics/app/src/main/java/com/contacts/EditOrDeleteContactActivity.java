@@ -34,12 +34,6 @@ public class EditOrDeleteContactActivity extends AppCompatActivity {
 
         intent = new Intent(this, MainActivity.class);
 
-//        int id = intent.getIntExtra("contactID", 0);
-//        String name = intent.getStringExtra("contactName");
-//        String surname = intent.getStringExtra("contactSurname");
-//        int phoneNumber = intent.getIntExtra("contactPhoneNumber", 0);
-//        String email = intent.getStringExtra("contactEmail");
-
         contact = (Contact) getIntent().getSerializableExtra("keyContact");
 
         etName.setText(contact.getName());

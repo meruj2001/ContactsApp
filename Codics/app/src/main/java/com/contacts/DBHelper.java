@@ -3,19 +3,15 @@ package com.contacts;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String CONTACT_TABLE = "contacts";
+    public static final String CONTACT_TABLE = "contact_table";
 
     public static final String COLUMN_CONTACT_ID = "id";
     public static final String COLUMN_CONTACT_NAME = "name";
@@ -24,13 +20,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CONTACT_EMAIL = "email";
 
     DBHelper(Context context) {
-        super(context, "addContact", null, 1);
+        super(context, CONTACT_TABLE, null, 1);
     }
 
     //This function is creating a new table in database;
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("LOG", "--- CREATE DATABASE ---");
 
         //Database table fields
         db.execSQL("create table " + CONTACT_TABLE + "("
@@ -69,20 +64,19 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor cursor = sqLiteDatabase.rawQuery(queryString, null);
+            if (cursor.moveToFirst()) {
+                //loop through the cursor and create new contact objects. Put them into the return list
+                do {
+                    int contactID = cursor.getInt(0);
+                    String contactName = cursor.getString(1);
+                    String contactSurname = cursor.getString(2);
+                    int contactPhoneNumber = cursor.getInt(3);
+                    String contactEmail = cursor.getString(4);
 
-        if (cursor.moveToFirst()) {
-            //loop through the cursor and create new contact objects. Put them into the return list
-            do {
-                int contactID = cursor.getInt(0);
-                String contactName = cursor.getString(1);
-                String contactSurname = cursor.getString(2);
-                int contactPhoneNumber = cursor.getInt(3);
-                String contactEmail = cursor.getString(4);
-
-                Contact newContact = new Contact(contactID, contactName, contactSurname, contactPhoneNumber, contactEmail);
-                returnList.add(newContact);
-            } while (cursor.moveToNext());
-        }
+                    Contact newContact = new Contact(contactID, contactName, contactSurname, contactPhoneNumber, contactEmail);
+                    returnList.add(newContact);
+                } while (cursor.moveToNext());
+            }
 
         //closing the cursor and db
         cursor.close();
@@ -90,13 +84,20 @@ public class DBHelper extends SQLiteOpenHelper {
         return  returnList;
     }
 
-    //
-    public void deleteOne(Contact contact) {
-
+    public void deleteContact(Contact contact) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        String queryString = "DELETE FROM " + CONTACT_TABLE + " WHERE " + COLUMN_CONTACT_ID + " = " + contact.getId();
+        sqLiteDatabase.delete(CONTACT_TABLE, COLUMN_CONTACT_ID + " = " + contact.getId(), null);
+    }
 
-        Cursor cursor = sqLiteDatabase.rawQuery(queryString, null);
+    public void editContact(Contact contact) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
 
+        cv.put(COLUMN_CONTACT_NAME, contact.getName());
+        cv.put(COLUMN_CONTACT_SURNAME, contact.getSurname());
+        cv.put(COLUMN_CONTACT_PHONE_NUMBER, contact.getPhoneNumber());
+        cv.put(COLUMN_CONTACT_EMAIL, contact.getEmail());
+
+        sqLiteDatabase.update(CONTACT_TABLE, cv, COLUMN_CONTACT_ID + " = " + contact.getId(), null);
     }
 }

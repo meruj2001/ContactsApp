@@ -14,10 +14,10 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.Collections;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent;
                 intent = new Intent(view.getContext(), AddContactActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Contact contact = (Contact)  adapterView.getItemAtPosition(i);
+                Intent intent = new Intent(MainActivity.this, EditOrDeleteContactActivity.class);
+                intent.putExtra("keyContact", contact);
                 startActivity(intent);
             }
         });
@@ -76,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateListView() {
         DBHelper dbHelper = new DBHelper(MainActivity.this);
-        contacts = new Contacts(dbHelper.getContacts());
+            contacts = new Contacts(dbHelper.getContacts());
 
-        contactAdapter = new ContactAdapter(MainActivity.this, contacts);
+            contactAdapter = new ContactAdapter(MainActivity.this, contacts);
 
-        lvContacts.setAdapter(contactAdapter);
+            lvContacts.setAdapter(contactAdapter);
     }
 
     @Override

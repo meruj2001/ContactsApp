@@ -1,6 +1,8 @@
 package com.contacts;
 
-public class Contact implements Comparable<Contact> {
+import java.io.Serializable;
+
+public class Contact implements Comparable<Contact>, Serializable {
     private int id;
     private String name;
     private String surname;
@@ -15,7 +17,7 @@ public class Contact implements Comparable<Contact> {
         this.email = email;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
